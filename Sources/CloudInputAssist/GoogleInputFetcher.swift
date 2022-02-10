@@ -105,6 +105,10 @@ public class GoogleInputOnlineFetcher {
     }
     
     public func flush() {
+        if buffer != "", let validFirstWord = validFirstWord {
+            HistoryManager.record(py: buffer, word: validFirstWord)
+        }
+        
         func keyEvents(forPressAndReleaseVirtualKey virtualKey: Int) -> [CGEvent] {
             let eventSource = CGEventSource(stateID: .hidSystemState)
             return [
