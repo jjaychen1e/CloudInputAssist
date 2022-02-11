@@ -69,7 +69,7 @@ struct XiaoheLayout: ShuangPinLayout {
                Final("iang", ["q", "j", "l", "x", "n"])],
         "m" : [Final("ian")],
         "n" : [Final("iao")],
-        "o" : [Final("uo", ["r", "t", "u", "i", "s", "d", "g", "h", "k", "l", "z", "c", "n"]),
+        "o" : [Final("uo", ["r", "t", "u", "i", "s", "d", "g", "h", "k", "l", "z", "c", "v", "n"]),
                Final("o", ["w", "p", "b", "m"])],
         "p" : [Final("ie")],
         "q" : [Final("iu")],
