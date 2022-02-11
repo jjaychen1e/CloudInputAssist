@@ -105,9 +105,6 @@ public class GoogleInputOnlineFetcher {
     }
     
     public func flush() {
-        if buffer != "", let validFirstWord = validFirstWord {
-            HistoryManager.record(py: buffer, word: validFirstWord)
-        }
         
         func keyEvents(forPressAndReleaseVirtualKey virtualKey: Int) -> [CGEvent] {
             let eventSource = CGEventSource(stateID: .hidSystemState)
@@ -117,23 +114,33 @@ public class GoogleInputOnlineFetcher {
             ]
         }
         
-        if let firstCandidateWord = words.first {
-            print(firstCandidateWord)
-            let tapLocation = CGEventTapLocation.cghidEventTap
-            
-            let escapeEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_Escape)
-            escapeEvents.forEach {
-                $0.post(tap: tapLocation)
+        if buffer != "", let validFirstWord = validFirstWord {
+            let py = buffer
+            DispatchQueue.global().async {
+                HistoryManager.record(py: py, word: validFirstWord)
             }
             
-            NSPasteboard.general.clearContents()
-            NSPasteboard.general.setString(firstCandidateWord, forType: .string)
-            
-            let pasteEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_ANSI_V)
-            pasteEvents.forEach {
-                $0.flags = .maskCommand
-                $0.post(tap: tapLocation)
+            if let firstCandidateWord = words.first {
+                print(firstCandidateWord)
+                
+                let tapLocation = CGEventTapLocation.cghidEventTap
+                
+                let escapeEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_CapsLock)
+                escapeEvents.forEach {
+                    $0.post(tap: tapLocation)
+                }
+                
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(firstCandidateWord, forType: .string)
+                
+                let pasteEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_ANSI_V)
+                pasteEvents.forEach {
+                    $0.flags = .maskCommand
+                    $0.post(tap: tapLocation)
+                }
             }
+            
+            clear()
         }
     }
     
