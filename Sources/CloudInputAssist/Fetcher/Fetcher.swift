@@ -9,7 +9,11 @@ import Foundation
 import Carbon.HIToolbox
 import AppKit
 
-public class GoogleInputOnlineFetcher {
+protocol OnlineFetcher {
+    static func fetch(pinyin: String) async -> [String]
+}
+
+public class Fetcher {
     
     private var wordsPublisher: WordsPublisher
     
@@ -93,37 +97,18 @@ public class GoogleInputOnlineFetcher {
                 
                 let _transformedBuffer = transformedBuffer
                 fetchTask = Task {
-                    let request = URLRequest(url: URL(string: "https://inputtools.google.com/request?text=\(_transformedBuffer)&itc=zh-t-i0-pinyin&num=11")!)
+//                    words = await GoogleFetcher.fetch(pinyin: _transformedBuffer)
+                    words = await BaiduFetcher.fetch(pinyin: _transformedBuffer)
                     
-                    do {
-                        let response = try await URLSession.shared.data(for: request)
-                        if let str = String(data: response.0, encoding: .utf8){
-                            let sourceRange = NSRange(
-                                str.startIndex..<str.endIndex,
-                                in: str
-                            )
-                            let pattern = #"\[\"SUCCESS\",\[\[\".*?\"\,\[(.*?)\].*"#
-                            let regex = try NSRegularExpression(pattern: pattern, options: [])
-                            if let result = regex.firstMatch(in: str, options: [], range: sourceRange) {
-                                if result.numberOfRanges > 1 {
-                                    let sub = (str as NSString).substring(with: result.range(at: 1))
-                                    words = sub.replacingOccurrences(of: "\"", with: "").split(separator: ",").map { String($0)}
-                                    if let firstWord = words.first {
-                                        if firstWord.allSatisfy({ !$0.isASCII }) {
-                                            validFirstWord = firstWord
-                                        } else {
-                                            validFirstWord = nil
-                                        }
-                                    } else {
-                                        validFirstWord = nil
-                                    }
-                                    print(words)
-                                }
-                            }
+                    if let firstWord = words.first {
+                        if firstWord.allSatisfy({ !$0.isASCII }) {
+                            validFirstWord = firstWord
                         } else {
-                            print("Failed to convert string.")
+                            validFirstWord = nil
                         }
-                    } catch _ {}
+                    } else {
+                        validFirstWord = nil
+                    }
                 }
             }
         }

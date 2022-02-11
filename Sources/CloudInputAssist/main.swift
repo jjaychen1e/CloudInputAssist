@@ -4,7 +4,7 @@ import AppKit
 import Carbon
 
 let wordsPublisher = WordsPublisher()
-let fetcher = GoogleInputOnlineFetcher(wordsPublisher: wordsPublisher)
+let fetcher = Fetcher(wordsPublisher: wordsPublisher)
 
 // Create a keyboard observer.
 if let keyboard = try? InputEventCenter() {
