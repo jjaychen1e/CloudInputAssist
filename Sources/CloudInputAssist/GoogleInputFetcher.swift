@@ -50,11 +50,50 @@ public class GoogleInputOnlineFetcher {
                 } catch _ {}
             }
             
-            if buffer != "" {
+            if buffer != "", buffer.count % 2 == 0 {
                 fetchTask?.cancel()
                 fetchTask = nil
+                
+                var transformedBuffer = ""
+                let bufferArray = Array<Character>(buffer)
+                var special = false
+                for i in 0..<bufferArray.count {
+                    if i % 2 == 0 {
+                        if let initial = XiaoheLayout.shared.initials[bufferArray[i]] {
+                            transformedBuffer.append(initial)
+                        } else {
+                            special = true
+                        }
+                    } else {
+                        if special {
+                            if let specialCombination = XiaoheLayout.shared.specials["\(bufferArray[i - 1])\(bufferArray[i])"] {
+                                transformedBuffer.append(specialCombination)
+                                special = false
+                            } else {
+                                // Error pinyin
+                                return
+                            }
+                        } else {
+                            if let finals = XiaoheLayout.shared.finals[bufferArray[i]] {
+                                if finals.count == 1 {
+                                    transformedBuffer.append(finals[0].value)
+                                } else {
+                                    let validFinals = finals.filter { $0.validInitials!.contains(bufferArray[i - 1])}
+                                    if validFinals.count == 1 {
+                                        transformedBuffer.append(validFinals[0].value)
+                                    } else {
+                                        // Error pinyin
+                                        return
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                let _transformedBuffer = transformedBuffer
                 fetchTask = Task {
-                    let request = URLRequest(url: URL(string: "https://inputtools.google.com/request?text=\(buffer)&itc=zh-t-i0-pinyin-x0-shuangpin-flypy&num=11")!)
+                    let request = URLRequest(url: URL(string: "https://inputtools.google.com/request?text=\(_transformedBuffer)&itc=zh-t-i0-pinyin&num=11")!)
                     
                     do {
                         let response = try await URLSession.shared.data(for: request)
