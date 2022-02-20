@@ -25,3 +25,7 @@ https://user-images.githubusercontent.com/31304335/153425836-3d15dea6-b7b0-414b-
 -  `Safari` 由于苹果限制，无法模拟按键（但是内容会到剪切板，可自行 `Eascape` 清空输入法缓冲区后粘贴）
 -  `Chrome` Web 控件可能会出现内容已上屏，但是输入法缓冲区仍在的问题（可自行 `Eascape` 清空输入法缓冲区）
 -  基于 `Electron` 开发的应用拦截 `CGEvent` 做快捷键，可能与模拟按键冲突
+
+## Todos 代办事项
+
+- 自动切换 Window 至聚焦的屏幕
