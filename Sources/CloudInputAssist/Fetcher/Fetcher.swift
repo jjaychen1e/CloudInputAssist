@@ -97,7 +97,7 @@ public class Fetcher {
                 
                 let _transformedBuffer = transformedBuffer
                 fetchTask = Task {
-//                    words = await GoogleFetcher.fetch(pinyin: _transformedBuffer)
+                    //                    words = await GoogleFetcher.fetch(pinyin: _transformedBuffer)
                     words = await BaiduFetcher.fetch(pinyin: _transformedBuffer)
                     
                     if let firstWord = words.first {
@@ -148,10 +148,27 @@ public class Fetcher {
                 print(firstCandidateWord)
                 
                 let tapLocation = CGEventTapLocation.cghidEventTap
-                
-                let escapeEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_CapsLock)
-                escapeEvents.forEach {
-                    $0.post(tap: tapLocation)
+                if let keys = CustomFlushConfigutation.customAppClearBufferCommand[App.currentActiveApplication] {
+                    for key in keys {
+                        if key == .clearBuffer {
+                            for _ in 0..<buffer.count {
+                                let keyEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_Delete)
+                                keyEvents.forEach {
+                                    $0.post(tap: tapLocation)
+                                }
+                            }
+                        } else {
+                            let keyEvents = keyEvents(forPressAndReleaseVirtualKey: Int(key.keyCode()))
+                            keyEvents.forEach {
+                                $0.post(tap: tapLocation)
+                            }
+                        }
+                    }
+                } else {
+                    let escapeEvents = keyEvents(forPressAndReleaseVirtualKey: kVK_CapsLock)
+                    escapeEvents.forEach {
+                        $0.post(tap: tapLocation)
+                    }
                 }
                 
                 NSPasteboard.general.clearContents()
@@ -183,8 +200,8 @@ public class Fetcher {
         }
         
         // Flush Key Shortcut
-        if key == .f12 {
-            print("f12!")
+        if key == .f6 {
+            print("f6!")
             flush()
         }
     }

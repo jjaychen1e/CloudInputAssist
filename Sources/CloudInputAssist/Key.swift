@@ -14,11 +14,12 @@ public enum Key: String {
     case
     f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12,
     downArrow, upArrow, leftArrow, rightArrow,
-    space, escape, backspace,
+    space, escape, backspace, capsLock,
     command, control, option, shift, fn,
     semiColon, quote, comma, period, slash,
     a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z,
-    _1, _2, _3, _4, _5, _6, _7, _8, _9, _0
+    _1, _2, _3, _4, _5, _6, _7, _8, _9, _0,
+    clearBuffer
     
     init?(code: KeyCode) {
         if let key = keyMap[code] {
@@ -26,6 +27,16 @@ public enum Key: String {
         } else {
             return nil
         }
+    }
+    
+    func keyCode() -> KeyCode {
+        for item in keyMap {
+            if item.value == self {
+                return item.key
+            }
+        }
+        
+        fatalError() // clearBuffer
     }
 }
 
@@ -51,6 +62,7 @@ let keyMap: [KeyCode: Key] = [
     KeyCode(kVK_Space): .space,
     KeyCode(kVK_Escape): .escape,
     KeyCode(kVK_Delete): .backspace,
+    KeyCode(kVK_CapsLock): .capsLock,
     
     KeyCode(kVK_Command): .command,
     KeyCode(kVK_Control): .control,

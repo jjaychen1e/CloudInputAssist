@@ -20,7 +20,7 @@ struct MainWindow: View {
                 
                 Spacer()
                 
-                Text("Hit F12 to choose.")
+                Text("Hit F6 to choose.")
                     .font(.system(size: 11, weight: .bold, design: .rounded))
             }
             .overlay {
