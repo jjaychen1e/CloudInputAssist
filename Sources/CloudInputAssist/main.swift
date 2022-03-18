@@ -47,7 +47,13 @@ struct CustomFlushConfigutation {
         :
     ]
     private(set) static var customAppClearBufferCommand: [String : [Key]] = [
-        "Logseq" : [.capsLock, .clearBuffer, .backspace]
+        "Logseq" : [.capsLock, .clearBuffer, .backspace],
+        "XMind" : [.capsLock, .clearBuffer, .backspace],
+        "Safari浏览器" : [.capsLock, .clearBuffer, .backspace],
+        "Google Chrome" : [.capsLock, .clearBuffer, .backspace],
+        "Discord" : [.capsLock, .clearBuffer, .backspace],
+        "Typora" : [.capsLock, .clearBuffer],
+        "微信": [.escape]
     ]
 }
 
